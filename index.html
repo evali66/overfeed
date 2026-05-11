@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Overfeed</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        background: #fdf6f0;
+        font-family: Georgia, serif;
+        cursor: crosshair;
+      }
+
+      .compliment {
+        position: absolute;
+        color: #b56576;
+        font-style: italic;
+        pointer-events: none;
+        user-select: none;
+        white-space: nowrap;
+      }
+
+      .hint {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        opacity: 0.4;
+        font-size: 13px;
+        color: #6d4c5b;
+      }
+    </style>
+  </head>
+
+  <body>
+    <p class="hint">move your mouse · press R to reset</p>
+
+    <script>
+      const compliments = [
+        "you look great today",
+        "you're so thoughtful",
+        "you matter",
+        "you're enough",
+        "you're doing your best",
+        "you're loved",
+        "you're so kind",
+        "you're amazing",
+        "you got this",
+        "you're beautiful",
+        "you deserve good things",
+        "you're appreciated"
+      ];
+
+      document.addEventListener("mousemove", (e) => {
+        const word = document.createElement("div");
+        word.className = "compliment";
+        word.textContent = compliments[Math.floor(Math.random() * compliments.length)];
+        word.style.left = e.clientX + "px";
+        word.style.top = e.clientY + "px";
+        word.style.fontSize = (14 + Math.random() * 10) + "px";
+        word.style.transform = "rotate(" + (Math.random() * 20 - 10) + "deg)";
+        document.body.appendChild(word);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "r" || e.key === "R") {
+          document.querySelectorAll(".compliment").forEach(w => w.remove());
+        }
+      });
+    </script>
+  </body>
+</html>
