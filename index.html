@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-
-/*
+<!--
   Overfeed — Eva Li
   Technique adapted from Jenny Ye's "The Noise Says Breathe"
   https://jianiye-coder.github.io/noise-says-breathe/
-*/
-
+-->
 <html>
   <head>
     <title>Overfeed</title>
@@ -18,7 +16,6 @@
         font-family: Georgia, serif;
         cursor: crosshair;
       }
-
       .compliment {
         position: absolute;
         color: #b56576;
@@ -27,7 +24,6 @@
         user-select: none;
         white-space: nowrap;
       }
-
       .hint {
         position: fixed;
         bottom: 20px;
@@ -67,8 +63,12 @@
       }
     </style>
   </head>
-
   <body>
+    <div class="bar-label">self-confidence</div>
+    <div class="bar-track">
+      <div class="bar-fill" id="fill"></div>
+    </div>
+
     <p class="hint">move your mouse · press R to reset</p>
 
     <script>
@@ -89,7 +89,7 @@
 
       let count = 0;
       const fill = document.getElementById("fill");
-      
+
       document.addEventListener("mousemove", (e) => {
         const word = document.createElement("div");
         word.className = "compliment";
@@ -99,9 +99,8 @@
         word.style.fontSize = (14 + Math.random() * 10) + "px";
         word.style.transform = "rotate(" + (Math.random() * 20 - 10) + "deg)";
         document.body.appendChild(word);
-      });
 
-              // update the bar
+        // update the bar
         count++;
         let confidence;
         if (count < 60) {
@@ -119,6 +118,8 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "r" || e.key === "R") {
           document.querySelectorAll(".compliment").forEach(w => w.remove());
+          count = 0;
+          fill.style.width = "0%";
         }
       });
     </script>
