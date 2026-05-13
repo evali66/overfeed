@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!--
   Overfeed — Eva Li
@@ -23,6 +24,12 @@
         pointer-events: none;
         user-select: none;
         white-space: nowrap;
+        transition: transform 2s ease-in, opacity 2s ease-in;
+      }
+      /* when the crash happens, this class gets added to every compliment */
+      .crashed {
+        transform: translateY(120vh) rotate(60deg) !important;
+        opacity: 0 !important;
       }
       .hint {
         position: fixed;
@@ -33,33 +40,34 @@
         color: #6d4c5b;
       }
 
-      /* the bar */
+      /* the bar — bigger now */
       .bar-label {
         position: fixed;
-        top: 20px;
+        top: 24px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 12px;
+        font-size: 16px;
         font-style: italic;
         color: #6d4c5b;
-        opacity: 0.7;
+        opacity: 0.8;
+        letter-spacing: 0.05em;
       }
       .bar-track {
         position: fixed;
-        top: 45px;
+        top: 58px;
         left: 50%;
         transform: translateX(-50%);
-        width: 300px;
-        height: 6px;
+        width: 500px;
+        height: 12px;
         background: rgba(109, 76, 91, 0.15);
-        border-radius: 3px;
+        border-radius: 6px;
       }
       .bar-fill {
         width: 0%;
         height: 100%;
         background: #b56576;
-        border-radius: 3px;
-        transition: width 0.5s ease;
+        border-radius: 6px;
+        transition: width 0.5s ease, background 1s ease;
       }
     </style>
   </head>
@@ -88,9 +96,13 @@
       ];
 
       let count = 0;
+      let crashed = false;  // tracks if the crash already happened
       const fill = document.getElementById("fill");
 
       document.addEventListener("mousemove", (e) => {
+        // after the crash, don't spawn new compliments
+        if (crashed) return;
+
         const word = document.createElement("div");
         word.className = "compliment";
         word.textContent = compliments[Math.floor(Math.random() * compliments.length)];
@@ -113,13 +125,39 @@
           confidence = Math.max(0, 30 - (count - 500) * 0.1);  // crashes
         }
         fill.style.width = confidence + "%";
+
+        // change the bar color as confidence drops
+        if (confidence < 30) {
+          fill.style.background = "#6d6d6d";  // grey when drained
+        } else if (confidence < 70) {
+          fill.style.background = "#a07a85";  // muted
+        }
+
+        // when confidence hits zero, trigger the crash
+        if (confidence <= 0 && !crashed) {
+          triggerCrash();
+        }
       });
+
+      // makes every compliment fall down and fade out
+      function triggerCrash() {
+        crashed = true;
+        document.querySelectorAll(".compliment").forEach((w) => {
+          // give each word a slightly different delay so they don't all fall at once
+          const delay = Math.random() * 800;
+          setTimeout(() => {
+            w.classList.add("crashed");
+          }, delay);
+        });
+      }
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "r" || e.key === "R") {
           document.querySelectorAll(".compliment").forEach(w => w.remove());
           count = 0;
+          crashed = false;
           fill.style.width = "0%";
+          fill.style.background = "#b56576";
         }
       });
     </script>
