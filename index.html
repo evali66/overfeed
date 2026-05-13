@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<!--
+/*
   Overfeed — Eva Li
   Technique adapted from Jenny Ye's "The Noise Says Breathe"
   https://jianiye-coder.github.io/noise-says-breathe/
--->
+*/
 
 <html>
   <head>
@@ -36,6 +36,35 @@
         font-size: 13px;
         color: #6d4c5b;
       }
+
+      /* the bar */
+      .bar-label {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        font-style: italic;
+        color: #6d4c5b;
+        opacity: 0.7;
+      }
+      .bar-track {
+        position: fixed;
+        top: 45px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 6px;
+        background: rgba(109, 76, 91, 0.15);
+        border-radius: 3px;
+      }
+      .bar-fill {
+        width: 0%;
+        height: 100%;
+        background: #b56576;
+        border-radius: 3px;
+        transition: width 0.5s ease;
+      }
     </style>
   </head>
 
@@ -58,6 +87,9 @@
         "you're appreciated"
       ];
 
+      let count = 0;
+      const fill = document.getElementById("fill");
+      
       document.addEventListener("mousemove", (e) => {
         const word = document.createElement("div");
         word.className = "compliment";
@@ -67,6 +99,21 @@
         word.style.fontSize = (14 + Math.random() * 10) + "px";
         word.style.transform = "rotate(" + (Math.random() * 20 - 10) + "deg)";
         document.body.appendChild(word);
+      });
+
+              // update the bar
+        count++;
+        let confidence;
+        if (count < 60) {
+          confidence = count * 1.8;          // rises
+        } else if (count < 180) {
+          confidence = 100;                  // peaks
+        } else if (count < 500) {
+          confidence = 100 - (count - 180) * 0.22;  // slowly drops
+        } else {
+          confidence = Math.max(0, 30 - (count - 500) * 0.1);  // crashes
+        }
+        fill.style.width = confidence + "%";
       });
 
       document.addEventListener("keydown", (e) => {
